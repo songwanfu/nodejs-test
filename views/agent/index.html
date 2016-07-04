@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>代理商信息管理</title>
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap-datetimepicker.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+  <% include ../head.html %>
+  <div class="row">
+    <div class="container">
+      <div>
+        <ol class="breadcrumb">
+          <li><a href="#">首页</a></li>
+          <li class="active">代理商信息管理</li>
+        </ol>
+      </div>
+      <div>
+        <div class="btn btn-success" id="btn-agent-modal" data-toggle="modal" data-target="#agentModal">添加代理商信息</div>
+      </div>
+      <div class="col-lg-11 bg-info" style="margin: 15px 0 0 0;padding: 10px 0 0 10px">
+        <div class="col-lg-3 form-group">
+          <div class="input-group date form_datetime" data-date="2016-07-01 00:00:00" data-date-format="yyyy-mm-dd HH:ii:ss" data-link-field="dtp_input1">
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-th"></span>
+            </span>
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-remove"></span>
+            </span>
+            <input class="form-control" size="16" type="text" value="" placeholder="开始时间" readonly>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 form-group">
+          <div class="input-group date form_datetime" data-date="2016-07-01 00:00:00" data-date-format="yyyy-mm-dd HH:ii:ss" data-link-field="dtp_input1">
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-th"></span>
+            </span>
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-remove"></span>
+            </span>
+            <input class="form-control" size="16" type="text" value="" placeholder="结束时间" readonly>
+          </div>
+        </div>
+
+        <div class="form-inline form-group  col-lg-3">
+          <div class="input-group">
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-user" title="代理商编号"></span>
+            </span>
+            <span class="input-group-addon" title="清除" style="cursor: pointer;" id="clear-code">
+                <span class="glyphicon glyphicon-remove"></span>
+            </span>
+            <input type="text" class="form-control" placeholder="代理商编号" id="input-code" value=""></input>
+          </div>
+        </div>
+
+        <div class="col-lg-2">
+          <div class="col-lg-8 btn btn-primary" id="btn-query">查询</div>
+        </div>
+
+      </div>
+      <div style="margin-top: 100px">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th><a href="/DataCenter/web/agent/index?sort=name" data-sort="name">代理商名称</a></th>
+              <th><a href="/DataCenter/web/agent/index?sort=code" data-sort="code">代理商编号</a></th>
+              <th><a href="/DataCenter/web/agent/index?sort=contract_id" data-sort="contract_id">代理商合同号</a></th>
+              <th><a href="/DataCenter/web/agent/index?sort=start_time" data-sort="start_time">代理开始时间</a></th>
+              <th><a href="/DataCenter/web/agent/index?sort=end_time" data-sort="end_time">代理结束时间</a></th>
+              <th><a href="/DataCenter/web/agent/index?sort=profit_proportion" data-sort="profit_proportion">分成比例 (%)</a></th>
+              <th><a href="/DataCenter/web/agent/index?sort=profit_return" data-sort="profit_return">返点比例 (%)</a></th>
+              <th><a href="/DataCenter/web/agent/index?sort=contractor" data-sort="contractor">签约人</a></th>
+              <th><a href="/DataCenter/web/agent/index?sort=create_time" data-sort="create_time">添加时间</a></th>
+              <th class="action-column">&nbsp;</th></tr>
+          </thead>
+          <tbody>
+            <% for(i in list) {%>
+              <tr>
+                <td><%= list[i]['name']%></td>
+                <td><%= list[i]['code']%></td>
+                <td><%= list[i]['contract_id']%></td>
+                <td><%= list[i]['start_time']%></td>
+                <td><%= list[i]['end_time']%></td>
+                <td><%= list[i]['profit_proportion']%></td>
+                <td><%= list[i]['profit_return']%></td>
+                <td><%= list[i]['contractor']%></td>
+                <td><%= list[i]['create_time']%></td>
+                <td><a href="/DataCenter/web/agent/update?id=<%=list[i]['id']%>" title="更新" aria-label="更新" data-pjax="0"><span class="glyphicon glyphicon-pencil"></span></a><span style="margin-left:15px"><a href="/DataCenter/web/agent/delete?id=<%=list[i]['id']%>" title="删除" aria-label="删除" data-confirm="您确定要删除此项吗？" data-method="post" data-pjax="0"><span class="glyphicon glyphicon-trash"></span></a></span>
+                </td>
+              </tr>
+            <% }%>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+
+<!-- Modal -->
+<div class="modal fade" id="agentModal" tabindex="-1" role="dialog" aria-labelledby="agentModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">添加代理商信息</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="form-group has-feedback">
+            <label class="control-label col-sm-3">代理商名称</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="input-name">
+              <span class="glyphicon glyphicon-star form-control-feedback" aria-hidden="true" style="color: #FF6666"></span>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <label class="control-label col-sm-3">代理商编号</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="input-code" aria-describedby="inputSuccess3Status">
+              <span class="glyphicon glyphicon-star form-control-feedback" aria-hidden="true" style="color: #FF6666"></span>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <label class="control-label col-sm-3">代理商合同号</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="input-code" aria-describedby="inputSuccess3Status">
+              <span class="glyphicon glyphicon-star form-control-feedback" aria-hidden="true" style="color: #FF6666"></span>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <label class="control-label col-sm-3">代理商开始时间</label>
+            <div class="col-sm-8">
+              <div class="input-group date form_datetime cpl-sm-3" data-date="2016-07-01 00:00:00" data-date-format="yyyy-mm-dd HH:ii:ss" data-link-field="dtp_input1">
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-th"></span>
+              </span>
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-remove"></span>
+              </span>
+              <input class="form-control" size="16" type="text" value="" placeholder="结束时间" readonly>
+            </div>
+            <span class="glyphicon glyphicon-star form-control-feedback" aria-hidden="true" style="color: #FF6666"></span>
+          </div>
+        </div>
+          <div class="form-group has-feedback">
+            <label class="control-label col-sm-3">代理商结束时间</label>
+            <div class="col-sm-8">
+              <div class="input-group date form_datetime cpl-sm-3" data-date="2016-07-01 00:00:00" data-date-format="yyyy-mm-dd HH:ii:ss" data-link-field="dtp_input1">
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-th"></span>
+              </span>
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-remove"></span>
+              </span>
+              <input class="form-control" size="16" type="text" value="" placeholder="结束时间" readonly>
+            </div>
+            <span class="glyphicon glyphicon-star form-control-feedback" aria-hidden="true" style="color: #FF6666"></span>
+          </div>
+        </div>
+          <div class="form-group has-feedback">
+            <label class="control-label col-sm-3">分成比例</label>
+            <div class="col-sm-8">
+              <input type="number" class="form-control" id="input-code" aria-describedby="inputSuccess3Status">
+              <span class="glyphicon glyphicon-star form-control-feedback" aria-hidden="true" style="color: #FF6666"></span>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <label class="control-label col-sm-3">返点比例</label>
+            <div class="col-sm-8">
+              <input type="number" class="form-control" id="input-code" aria-describedby="inputSuccess3Status">
+              <span class="glyphicon glyphicon-star form-control-feedback" aria-hidden="true" style="color: #FF6666"></span>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <label class="control-label col-sm-3">签约人</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="input-code" aria-describedby="inputSuccess3Status">
+              <span class="glyphicon glyphicon-star form-control-feedback" aria-hidden="true" style="color: #FF6666"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+<script type="text/javascript">
+  $(".form_datetime").datetimepicker({
+    language: "zh-CN",
+    format: "yyyy-mm-dd HH:ii:ss",
+    showMeridian: true,
+    autoclose: true,
+    todayBtn: true
+  });
+
+  // $('#btn-agent-modal').on('click', function () {
+  //   alert(1);
+  // });
+</script>
+</html>
